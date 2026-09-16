@@ -1,8 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.netlify.deukkbiic.twa",
-    "sha256_cert_fingerprints": ["52:99:7B:8C:E2:B2:15:A8:DA:27:1D:59:63:63:DB:A8:82:06:52:71:FC:4F:F7:45:13:E9:27:2B:21:8F:17:5F"]
-  }
-}]
