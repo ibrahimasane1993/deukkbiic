@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supprimer mon compte — DEUK BI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a14;
+      color: #E8E8F0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(21,101,192,0.25);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .logo span { color: #1976D2; }
+    .sub {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+    h1 {
+      font-size: 20px;
+      color: #FF3B30;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    p { color: #888; font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+    .info-box {
+      background: rgba(255,59,48,0.08);
+      border: 1px solid rgba(255,59,48,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #FF6B60;
+      line-height: 1.6;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    input, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(21,101,192,0.3);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #E8E8F0;
+      font-size: 15px;
+      margin-bottom: 16px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    textarea { height: 100px; resize: none; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #1976D2;
+    }
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #C62828, #FF3B30);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .btn:hover { opacity: 0.9; }
+    .success {
+      display: none;
+      background: rgba(0,200,100,0.1);
+      border: 1px solid rgba(0,200,100,0.3);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: #00CC66;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .contact-alt {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555;
+    }
+    .contact-alt a { color: #1976D2; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">deuk<span>bi</span></div>
+    <div class="sub">🇸🇳 COURSE · COMPÉTITION · ÉVOLUTION</div>
+
+    <h1>🗑️ Supprimer mon compte</h1>
+
+    <div class="info-box">
+      ⚠️ La suppression de votre compte est <strong>irréversible</strong>. Toutes vos données seront définitivement effacées : pseudo, kilométrage, badges, photo de profil et historique de courses.
+    </div>
+
+    <p>Remplissez ce formulaire pour demander la suppression de votre compte. Nous traiterons votre demande dans un délai de <strong>7 jours</strong>.</p>
+
+    <div id="form-area">
+      <label>Votre pseudo DEUK BI</label>
+      <input type="text" id="pseudo" placeholder="Ex: Satoshi, FatouRun..." maxlength="30"/>
+
+      <label>Votre email (optionnel)</label>
+      <input type="email" id="email" placeholder="Pour confirmation"/>
+
+      <label>Raison (optionnelle)</label>
+      <textarea id="raison" placeholder="Pourquoi souhaitez-vous supprimer votre compte ?"></textarea>
+
+      <button class="btn" onclick="submitDelete()">🗑️ DEMANDER LA SUPPRESSION</button>
+    </div>
+
+    <div class="success" id="success-msg">
+      ✅ Votre demande a été envoyée !<br><br>
+      Nous supprimerons votre compte <strong id="pseudo-confirm"></strong> dans les 7 jours.<br><br>
+      Un email de confirmation sera envoyé si vous avez fourni votre adresse.
+    </div>
+
+    <div class="contact-alt">
+      Ou contactez-nous directement :<br>
+      <a href="mailto:ibrahima93sane@gmail.com">ibrahima93sane@gmail.com</a>
+    </div>
+  </div>
+
+  <script>
+    function submitDelete() {
+      const pseudo = document.getElementById('pseudo').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const raison = document.getElementById('raison').value.trim();
+
+      if (!pseudo) {
+        alert('Veuillez entrer votre pseudo DEUK BI.');
+        return;
+      }
+
+      // Envoyer par email via mailto
+      const subject = encodeURIComponent('Demande de suppression de compte DEUK BI — ' + pseudo);
+      const body = encodeURIComponent(
+        'Pseudo: ' + pseudo + '\n' +
+        'Email: ' + (email || 'Non fourni') + '\n' +
+        'Raison: ' + (raison || 'Non fournie') + '\n\n' +
+        'Demande de suppression de compte et de toutes les données associées.'
+      );
+
+      window.location.href = 'mailto:ibrahima93sane@gmail.com?subject=' + subject + '&body=' + body;
+
+      // Afficher le message de succès
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('pseudo-confirm').textContent = pseudo;
+      document.getElementById('success-msg').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
