@@ -39,5 +39,11 @@
       "url": "/?page=classement",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "app.netlify.deukkbiic.twa"
+    }
   ]
 }
