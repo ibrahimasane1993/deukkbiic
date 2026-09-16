@@ -1,9 +1,16 @@
 [build]
   publish = "."
 
+# assetlinks.json
 [[redirects]]
   from = "/.well-known/assetlinks.json"
   to = "/assetlinks.json"
+  status = 200
+
+# manifest.json
+[[redirects]]
+  from = "/manifest.json"
+  to = "/manifest.json"
   status = 200
 
 [[headers]]
@@ -11,11 +18,26 @@
   [headers.values]
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
-    X-Content-Type-Options = "nosniff"
 
 [[headers]]
   for = "/.well-known/assetlinks.json"
   [headers.values]
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
-    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Content-Type = "application/javascript"
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
