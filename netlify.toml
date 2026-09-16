@@ -1,7 +1,6 @@
 [build]
   publish = "."
 
-# Servir assetlinks.json depuis la racine via l'URL .well-known
 [[redirects]]
   from = "/.well-known/assetlinks.json"
   to = "/assetlinks.json"
