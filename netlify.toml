@@ -1,15 +1,22 @@
 [build]
   publish = "."
 
+# Servir assetlinks.json depuis la racine via l'URL .well-known
+[[redirects]]
+  from = "/.well-known/assetlinks.json"
+  to = "/assetlinks.json"
+  status = 200
+
 [[headers]]
-  for = "/.well-known/assetlinks.json"
+  for = "/assetlinks.json"
   [headers.values]
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
     X-Content-Type-Options = "nosniff"
 
 [[headers]]
-  for = "/*"
+  for = "/.well-known/assetlinks.json"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
+    Content-Type = "application/json"
+    Access-Control-Allow-Origin = "*"
     X-Content-Type-Options = "nosniff"
