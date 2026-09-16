@@ -1,11 +1,11 @@
 {
   "name": "Deuk Bi — Marche Compétitive",
   "short_name": "DEUK BI",
-  "description": "Application sénégalaise de marche compétitive gamifiée. Conquiers le territoire du Sénégal !",
+  "description": "Application de marche compétitive et gamifiée. Marche, conquiers le classement mondial et débloque des badges ! 🌍🏃",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0A0F",
-  "theme_color": "#00FF7F",
+  "theme_color": "#1565C0",
   "orientation": "portrait-primary",
   "lang": "fr",
   "categories": ["sports", "fitness", "games"],
@@ -33,9 +33,9 @@
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Classement",
+      "name": "Classement mondial",
       "short_name": "Classement",
-      "description": "Voir le classement national",
+      "description": "Voir le classement mondial",
       "url": "/?page=classement",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
