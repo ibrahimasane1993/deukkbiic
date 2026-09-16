@@ -1,8 +1,8 @@
 [{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.deukbi.app",
-    "sha256_cert_fingerprints": ["AB:7F:D3:73:D6:55:BC:FA:C1:65:6E:B2:F3:9A:FA:AF:AD:DB:59:46:D4:E1:39:59:F7:92:2A:A2:B3:13:54:2A"]
-  }
-}]
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.netlify.deukkbiic.twa",
+        "sha256_cert_fingerprints": ["52:99:7B:8C:E2:B2:15:A8:DA:27:1D:59:63:63:DB:A8:82:06:52:71:FC:4F:F7:45:13:E9:27:2B:21:8F:17:5F"]
+      }
+    }]
