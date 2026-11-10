@@ -2483,21 +2483,23 @@
   }
 
   // Récupère le profil de ce téléphone, ou rattache l'ancien profil (pseudo)
-  async function claimPlayer(name, pin) {
-    const { data, error } = await sb.rpc('claim_player', { p_name: name, p_pin: pin || null });
+  // id = identifiant du profil déjà connu sur ce téléphone (évite de prendre
+  // le profil d'un homonyme)
+  async function claimPlayer(name, pin, id) {
+    const { data, error } = await sb.rpc('claim_player', { p_name: name, p_pin: pin || null, p_id: id || null });
     if (error) { const e = new Error(_authErrCode(error)); e.code = _authErrCode(error); throw e; }
     return data; // objet joueur, ou null si le pseudo est libre
   }
 
   // claimPlayer + demande du PIN pour les anciens comptes qui en ont un
-  async function claimPlayerWithPin(name) {
+  async function claimPlayerWithPin(name, id) {
     try {
-      return await claimPlayer(name, null);
+      return await claimPlayer(name, null, id);
     } catch(e) {
       if (e.code !== 'pin_requis') throw e;
       const pin = prompt('Ce profil est protégé par un code PIN. Entre ton code à 4 chiffres :');
       if (!pin) throw e;
-      return await claimPlayer(name, pin.trim());
+      return await claimPlayer(name, pin.trim(), id);
     }
   }
 
@@ -2515,12 +2517,23 @@
     };
   }
 
-  // Met à jour la ligne du joueur connecté (RLS : seulement la sienne)
-  function updateMyRow(fields) {
-    if (!currentUser || !currentUser.db_id) {
-      return Promise.resolve({ error: new Error('profil non synchronisé') });
+  // Met à jour la ligne du joueur connecté (RLS : seulement la sienne).
+  // Une mise à jour refusée par RLS ne renvoie PAS d'erreur, juste 0 ligne :
+  // on le détecte, on relie le profil au compte et on réessaie une fois.
+  async function updateMyRow(fields, noRelink) {
+    if (!currentUser) return { error: new Error('non connecté') };
+    if (!currentUser.db_id && !noRelink) await syncUserFromDB(true);
+    if (!currentUser || !currentUser.db_id) return { error: new Error('profil non synchronisé') };
+    try {
+      const { data, error } = await sb.from('players').update(fields).eq('id', currentUser.db_id).select('id');
+      if (error) return { error };
+      if (data && data.length) return { error: null };
+      if (noRelink) return { error: new Error('profil non lié à ce téléphone') };
+      await syncUserFromDB(true);
+      return updateMyRow(fields, true);
+    } catch(e) {
+      return { error: e };
     }
-    return sb.from('players').update(fields).eq('id', currentUser.db_id);
   }
 
   function _showBanned() {
@@ -2539,16 +2552,25 @@
   }
 
   // Au démarrage / retour en ligne : relie la session locale au compte Supabase
-  async function syncUserFromDB() {
+  let _syncPromise = null;
+  function syncUserFromDB(silent) {
+    // Un seul rattachement à la fois (démarrage, retour en ligne, envoi de km…)
+    if (!_syncPromise) {
+      _syncPromise = _syncUserFromDB(silent).finally(() => { _syncPromise = null; });
+    }
+    return _syncPromise;
+  }
+
+  async function _syncUserFromDB(silent) {
     if (!currentUser) return;
     try {
       await ensureAuth();
       let row;
       try {
-        row = await claimPlayerWithPin(currentUser.name);
+        row = await claimPlayerWithPin(currentUser.name, currentUser.db_id);
       } catch(e) {
         if (e.code === 'banni') { _showBanned(); return; }
-        if (e.code === 'pseudo_pris') {
+        if (e.code === 'pseudo_pris' && !silent) {
           showToast('⚠️ Ce pseudo est lié à un autre téléphone. Reconnecte-toi avec un autre pseudo.');
         }
         return;
@@ -2564,11 +2586,18 @@
         row = ins.data;
       }
       const localKm = currentUser.km || 0;
+      const localPhoto = currentUser.photo || null;
       currentUser = _userFromRow(row, currentUser);
       saveSession(currentUser);
-      // km faits hors ligne : les envoyer
+      // km faits hors ligne / photo restée sur le téléphone : les envoyer
+      const fix = {};
       if (localKm > (parseFloat(row.km) || 0)) {
-        updateMyRow({ km: localKm, level: getLevel(localKm), last_active: new Date().toISOString() });
+        fix.km = localKm; fix.level = getLevel(localKm); fix.last_active = new Date().toISOString();
+      }
+      if (localPhoto && !row.photo) fix.photo = localPhoto;
+      if (Object.keys(fix).length) {
+        const { error } = await updateMyRow(fix, true);
+        if (!error) { try { localStorage.removeItem('deukbi_pending_sync'); } catch(e) {} }
       }
       bootApp();
     } catch(e) {}

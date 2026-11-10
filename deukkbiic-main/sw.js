@@ -1,6 +1,6 @@
 // DEUK BI — Service Worker v5.0 — Hors ligne complet
 // Changer CACHE_VERSION à chaque mise en ligne pour forcer la mise à jour des téléphones.
-const CACHE_VERSION = 'deukbi-v5';
+const CACHE_VERSION = 'deukbi-v6';
 
 const PRECACHE_URLS = [
   '/',
